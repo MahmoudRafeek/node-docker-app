@@ -9,9 +9,9 @@ app.use(express.json());
 
 connectDB();
 
-kafkaConfig.consume("test-topic", async (data) => {
+kafkaConfig.consume("test-topic", async (data1) => {
   try {
-
+    const data = JSON.parse(data1);
     const newLog = new ActivityLog({
       userId: data.userId,
       action: data.action,

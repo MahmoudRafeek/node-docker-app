@@ -20,6 +20,12 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+    # إضافة Healthcheck عشان الـ App ما يشتغلش إلا لما كافكا يفوق
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongodb:
     image: mongo:latest
@@ -33,11 +39,14 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - kafka
-      - mongodb
+      kafka:
+        condition: service_healthy # الانتظار الذكي
+      mongodb:
+        condition: service_started
     environment:
-      # الرابط هنا بيستخدم اسم الخدمة "mongodb"
       - MONGO_URI=mongodb://mongodb:27017/mahmoud_db
+      - KAFKA_BROKER=kafka:9092
+      
 # services:
 #   zookeeper:
 #     image: confluentinc/cp-zookeeper:7.5.0
