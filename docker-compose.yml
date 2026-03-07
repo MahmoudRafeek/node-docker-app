@@ -8,25 +8,19 @@ services:
       - "2181:2181"
 
   kafka:
-  image: confluentinc/cp-kafka:7.5.0
-  depends_on:
-    - zookeeper
-  ports:
-    - "9092:9092"
-  environment:
-    KAFKA_BROKER_ID: 1
-    KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-    KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-    KAFKA_HEAP_OPTS: "-Xmx128M -Xms128M"
-    # إضافة Healthcheck عشان الـ App ما يشتغلش إلا لما كافكا يفوق
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "9092"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_HEAP_OPTS: "-Xmx128M -Xms128M"
 
   mongodb:
     image: mongo:latest
@@ -40,14 +34,13 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      kafka:
-        condition: service_healthy # الانتظار الذكي
-      mongodb:
-        condition: service_started
+      - kafka
+      - mongodb
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/mahmoud_db
-      - KAFKA_BROKER=kafka:9092
-      
+      MONGO_URI: mongodb://mongodb:27017/mahmoud_db
+      KAFKA_BROKER: kafka:9092
+
+
 # services:
 #   zookeeper:
 #     image: confluentinc/cp-zookeeper:7.5.0
