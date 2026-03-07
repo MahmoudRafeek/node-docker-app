@@ -16,10 +16,14 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_HEAP_OPTS: "-Xmx128M -Xms128M"
 
   mongodb:
@@ -39,36 +43,3 @@ services:
     environment:
       MONGO_URI: mongodb://mongodb:27017/mahmoud_db
       KAFKA_BROKER: kafka:9092
-
-
-# services:
-#   zookeeper:
-#     image: confluentinc/cp-zookeeper:7.5.0
-#     environment:
-#       ZOOKEEPER_CLIENT_PORT: 2181
-#       ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: ERROR # سكت زوكيبر
-#     logging:
-#       driver: "none" # أو ممكن تلغي اللوجز بتاعته خالص
-
-#   kafka:
-#     image: confluentinc/cp-kafka:7.5.0
-#     depends_on:
-#       - zookeeper
-#     environment:
-#       KAFKA_BROKER_ID: 1
-#       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-#       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-#       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#       KAFKA_LOG4J_ROOT_LOGLEVEL: ERROR # سكت كافكا
-#       KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
-#     logging:
-#       driver: "none" # الغي لوجز كافكا من الترمنال
-
-#   app:
-#     build: .
-#     container_name: node_app
-#     ports:
-#       - "3000:3000"
-#     depends_on:
-#       - kafka
-#     # هنا مش هنلغي اللوجز عشان تشوف الـ Console.log بتاعك
