@@ -1,0 +1,13 @@
+const mongoose = require('mongoose');
+
+// --- 1. الربط بـ MongoDB (لوكال على جهازك) ---
+// بنستخدم host.docker.internal عشان يكلم المونجو اللي بره الدوكر
+const connectDB = async () => {
+const mongoURI = process.env.MONGO_URI || 'mongodb://mongodb:27017/mahmoud_db';
+await mongoose.connect(mongoURI)
+  .then(() => console.log("🍃 MongoDB Connected Successfully!"))
+  .catch(err => console.error("❌ MongoDB Connection Error:", err));
+  
+};
+
+module.exports = connectDB;
